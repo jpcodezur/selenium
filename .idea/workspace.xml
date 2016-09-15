@@ -2,7 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2129d6aa-9c16-4959-a232-cf73304cc46f" name="Default" comment="">
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/cruzverde/basico.php" afterPath="$PROJECT_DIR$/cruzverde/basico.php" />
+=======
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/phpwebdriver/WebDriverBase.php" afterPath="$PROJECT_DIR$/phpwebdriver/WebDriverBase.php" />
+>>>>>>> 22b880f9df8d113b700e1f3ef76b5b49d22a05a0
     </list>
     <ignored path="html.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -36,8 +42,13 @@
       <file leaf-file-name="basico.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cruzverde/basico.php">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="382">
               <caret line="87" column="0" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
+=======
+            <state relative-caret-position="210">
+              <caret line="71" column="8" selection-start-line="71" selection-start-column="8" selection-end-line="71" selection-end-column="8" />
+>>>>>>> 22b880f9df8d113b700e1f3ef76b5b49d22a05a0
               <folding />
             </state>
           </provider>
@@ -237,12 +248,20 @@
       <workItem from="1473801592465" duration="9301000" />
       <workItem from="1473864872907" duration="703000" />
       <workItem from="1473875473613" duration="934000" />
+<<<<<<< HEAD
       <workItem from="1473942347384" duration="3336000" />
+=======
+      <workItem from="1473942347384" duration="2789000" />
+>>>>>>> 22b880f9df8d113b700e1f3ef76b5b49d22a05a0
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
     <option name="totallyTimeSpent" value="14274000" />
+=======
+    <option name="totallyTimeSpent" value="13727000" />
+>>>>>>> 22b880f9df8d113b700e1f3ef76b5b49d22a05a0
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1366" height="738" extended-state="6" />
@@ -467,8 +486,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cruzverde/basico.php">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="382">
           <caret line="87" column="0" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
+=======
+        <state relative-caret-position="210">
+          <caret line="71" column="8" selection-start-line="71" selection-start-column="8" selection-end-line="71" selection-end-column="8" />
+>>>>>>> 22b880f9df8d113b700e1f3ef76b5b49d22a05a0
           <folding />
         </state>
       </provider>
