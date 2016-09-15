@@ -238,7 +238,7 @@ class WebDriverBase {
     public function selectOption($idSelect,$optionNumber){
         $script = "document.getElementById('".$idSelect."').getElementsByTagName('option')[".$optionNumber."].selected = 'selected';";
         $script .= "document.getElementById('".$idSelect."').dispatchEvent(new Event('change', { 'bubbles': true }));";
-        $select = $this->execute($script,array());
+        return $script;
     }
 
 }
