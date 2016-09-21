@@ -73,14 +73,23 @@ class Base extends PHPUnit_Framework_TestCase {
 	}
 
 	public function isAdminLoginSuccess(){
-        $isLoggedIn = $this->webdriver->findElementBy(LocatorStrategy::cssSelector, 'body > div.wrapper > div > header > div > div.header_top > div > div.welcome-cc-msg')->getText();
-        if(strpos($isLoggedIn,"Esta logueado como")===false){
-            Base::log("LOGIN ADMIN ERROR","error");
-            return false;
+
+        $ret = array(
+            "message" => "LOGIN ADMIN ERROR",
+            "message_type" => "alert",
+            "error" => true
+        );
+
+	    $isLoggedIn = $this->webdriver->findElementBy(LocatorStrategy::cssSelector, 'body > div.wrapper > div > header > div > div.header_top > div > div.welcome-cc-msg')->getText();
+        if(strpos($isLoggedIn,"Esta logueado como")!==false){
+            $ret = array(
+                "message" => "LOGIN ADMIN SUCCESS",
+                "message_type" => "msg",
+                "error" => false
+            );
         }
 
-        Base::log("LOGIN ADMIN SUCCESS","msg");
-        return true;
+        return $ret;
     }
 	
 	public function loginCustomer(){

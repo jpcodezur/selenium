@@ -18,6 +18,8 @@ return array(
             "password" => "g30c0m!",
         )
     ),
+    //Los tipos de alerta que permito loguear
+    "log_level" => array("msg","alert","error","success"),
     //clientes configurados para el sitio
     "customers" => array(
         "documentOrEmail" => "80236103",

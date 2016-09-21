@@ -16,25 +16,32 @@ class CheckList {
     }
 
     public static function start(){
-        $mantis = self::getMantisId();
+        $mantis = substr(debug_backtrace()[1]['function'],4,strlen(debug_backtrace()[1]['function']));
         Base::log("START TESTING MANTIS $mantis","msg");
     }
 
     public static function end($status){
-        $mantis = self::getMantisId();
-        if(!$status){
-            Base::log("ERROR MANTIS $mantis","error");
+        $mantis = substr(debug_backtrace()[1]['function'],4,strlen(debug_backtrace()[1]['function']));
+
+        if(!isset($status["message_type"])){
+            $status["message_type"] = "error";
         }
 
-        Base::log("MANTIS $mantis END SUCCESS","success");
-    }
+        if($status["error"]){
+            Base::log($status["message"],$status["message_type"]);
+        }
 
-    public static function getMantisId(){
-        return substr(debug_backtrace()[1]['function'],4,strlen(debug_backtrace()[1]['function']));
+        if(!$status["error"]){
+            if(in_array($status["message_type"],Config::getInstance()->getConfig()["log_level"])){
+                Base::log($status["message"],$status["message_type"]);
+            }
+
+            Base::log("MANTIS $mantis END SUCCESS","success");
+        }
+
     }
 
     public function chk_284492(){
-        $status = false;
         self::start();
 
         $docType = "CE";
@@ -46,15 +53,21 @@ class CheckList {
         //Check if is admin loggedIn
         $status = $this->base->isAdminLoginSuccess();
 
-        //Login as customer
-        $this->base->webdriver->findElementBy(LocatorStrategy::cssSelector, '#email')->sendKeys(array($docNumber));
-        $this->base->webdriver->findElementBy(LocatorStrategy::cssSelector, '#send2')->click();
+        if($status["error"] == false) {
 
-        sleep(5);
+            //Login as customer
+            $this->base->webdriver->findElementBy(LocatorStrategy::cssSelector, '#email')->sendKeys(array($docNumber));
+            $this->base->webdriver->findElementBy(LocatorStrategy::cssSelector, '#send2')->click();
 
-        $registerDocNumber = $this->base->webdriver->findElementBy(LocatorStrategy::cssSelector, '#document_number')->getText();
-        if($registerDocNumber == $docNumber){
-            $status = true;
+            sleep(5);
+
+            $registerDocNumber = $this->base->webdriver->findElementBy(LocatorStrategy::cssSelector, '#document_number')->getText();
+            if ($registerDocNumber == $docNumber) {
+                $status = array(
+                    "message" => "LOGIN DOCUMENT NUMBER AND REGISTER DOCUMENT MATCHS",
+                    "error" => false
+                );
+            }
         }
 
         self::end($status);
