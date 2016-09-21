@@ -3,23 +3,30 @@
 class Base extends PHPUnit_Framework_TestCase {
 
     private $params;
+    private $customers;
+    private $adminUser;
 
-    public static function log($text,$type="msg"){
+    public static function log($text,$type="default"){
         switch ($type){
             case "msg":
                 echo Colors::getInstance()->getColoredString($text, CLI_BLUE, BACKGROUND_BLACK) . "\n";
+                Log::getInstance()->logInFile($text,$type);
                 break;
             case "alert":
                 echo Colors::getInstance()->getColoredString($text, CLI_YELLOW, BACKGROUND_BLACK) . "\n";
+                Log::getInstance()->logInFile($text,$type);
                 break;
             case "error":
                 echo Colors::getInstance()->getColoredString($text, CLI_RED, BACKGROUND_BLACK) . "\n";
+                Log::getInstance()->logInFile($text,$type);
                 break;
             case "success":
                 echo Colors::getInstance()->getColoredString($text, CLI_GREEN, BACKGROUND_BLACK) . "\n";
+                Log::getInstance()->logInFile($text,$type);
                 break;
             default:
                 echo Colors::getInstance()->getColoredString($text, CLI_WHITE, BACKGROUND_BLACK) . "\n";
+                Log::getInstance()->logInFile($text,$type);
         }
     }
 
@@ -33,13 +40,13 @@ class Base extends PHPUnit_Framework_TestCase {
      * Parametros para inicializar las pruebas
      * */
     public function init(){
-        $this->params = array(
-            "customer" => array(
-                //Con convenios
-                    "mustHaveConvenios" => true,
-                    "documentOrEmail" => "80236103",
-            )
-        );
+        $this->params = Config::getInstance()->getConfig();
+        $this->customers = $this->params["customers"];
+        foreach($this->params["admin_users"] as $adminUsers){
+            if($adminUsers["username"] == $this->params["default_admin_user"]){
+                $this->adminUser = $adminUsers;
+            }
+        }
     }
 
     public function setUp() {
@@ -55,25 +62,39 @@ class Base extends PHPUnit_Framework_TestCase {
 	}
 	
 	public function loginAdmin(){
-		$this->webdriver->get("http://192.168.240.97:85/admin");
+        $status = true;
+        Events::getInstance()->goToUrl($this->webdriver,"admin","backend");
 		$this->webdriver->findElementBy(LocatorStrategy::id, 'username')->sendKeys(array("geocom"));
 		$this->webdriver->findElementBy(LocatorStrategy::id, 'login')->sendKeys(array("g30c0m!"));
 		$this->webdriver->findElementBy(LocatorStrategy::cssSelector, '#loginForm > div > div.form-buttons > input')->click();
 		sleep(5);
+
+        return $status;
 	}
+
+	public function isAdminLoginSuccess(){
+        $isLoggedIn = $this->webdriver->findElementBy(LocatorStrategy::cssSelector, 'body > div.wrapper > div > header > div > div.header_top > div > div.welcome-cc-msg')->getText();
+        if(strpos($isLoggedIn,"Esta logueado como")===false){
+            Base::log("LOGIN ADMIN ERROR","error");
+            return false;
+        }
+
+        Base::log("LOGIN ADMIN SUCCESS","msg");
+        return true;
+    }
 	
 	public function loginCustomer(){
-		$this->webdriver->get("http://192.168.240.97:85/customer/account/login");
-		
+		$status = true;
+		Events::getInstance()->goToUrl($this->webdriver,"loginCustomer");
+
 		//Check if is admin loggedIn
-		$isLoggedIn = $this->webdriver->findElementBy(LocatorStrategy::cssSelector, 'body > div.wrapper > div > header > div > div.header_top > div > div.welcome-cc-msg')->getText();
-		if(strpos($isLoggedIn,"Esta logueado como")===false){
-			$this->fail("Error logeando como admin.");
-		}
+        $status = $this->isAdminLoginSuccess();
 
 		//Login as customer
-		$this->webdriver->findElementBy(LocatorStrategy::cssSelector, '#email')->sendKeys(array($this->params["customer"]["documentOrEmail"]));
+		$this->webdriver->findElementBy(LocatorStrategy::cssSelector, '#email')->sendKeys(array($this->customer["documentOrEmail"]));
 		$this->webdriver->findElementBy(LocatorStrategy::cssSelector, '#send2')->click();
+
+        return $status;
 
 	}
 
@@ -82,15 +103,24 @@ class Base extends PHPUnit_Framework_TestCase {
         $this->webdriver->execute($this->webdriver->selectOption('address-select',2),array());
         sleep(2);
 
-        //Si es cliente con checkeo que tenga convenios cargados y selecciono el primero de la lista
-        if($this->params["customer"]["mustHaveConvenios"]){
-            $this->webdriver->execute($this->webdriver->selectOption('convenio',1),array());
-            sleep(2);
-            $this->webdriver->execute($this->webdriver->selectOption('plan',1),array());
-        }
-
         sleep(5);
         $this->webdriver->findElementBy(LocatorStrategy::cssSelector, 'div.buttons-set:nth-child(5) > button:nth-child(2)')->click();
 	}
+
+    public function existConvenios(){
+
+        //Si es cliente con convenio, checkeo que tenga convenios y plan cargados en el form y selecciono el primero de la lista
+        foreach($this->customers as $customer){
+            if($customer["mustHaveConvenios"]){
+                $this->webdriver->execute($this->webdriver->selectOption('convenio',1),array());
+                sleep(2);
+                $this->webdriver->execute($this->webdriver->selectOption('plan',1),array());
+            }
+        }
+    }
+
+    public function redirect($pUrl,$scope = "frontend"){
+        Events::getInstance()->goToUrl($this->webdriver,$pUrl,$scope);
+    }
 
 }
