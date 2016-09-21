@@ -1,9 +1,33 @@
 <?php
-require_once('phpwebdriver' . DIRECTORY_SEPARATOR . 'WebDriver.php');
 
-class PHPWebDriverTest extends PHPUnit_Framework_TestCase {
+class Base extends PHPUnit_Framework_TestCase {
 
     private $params;
+
+    public static function log($text,$type="msg"){
+        switch ($type){
+            case "msg":
+                echo Colors::getInstance()->getColoredString($text, CLI_BLUE, BACKGROUND_BLACK) . "\n";
+                break;
+            case "alert":
+                echo Colors::getInstance()->getColoredString($text, CLI_YELLOW, BACKGROUND_BLACK) . "\n";
+                break;
+            case "error":
+                echo Colors::getInstance()->getColoredString($text, CLI_RED, BACKGROUND_BLACK) . "\n";
+                break;
+            case "success":
+                echo Colors::getInstance()->getColoredString($text, CLI_GREEN, BACKGROUND_BLACK) . "\n";
+                break;
+            default:
+                echo Colors::getInstance()->getColoredString($text, CLI_WHITE, BACKGROUND_BLACK) . "\n";
+        }
+    }
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->setUp();
+    }
 
     /*
      * Parametros para inicializar las pruebas
@@ -24,12 +48,10 @@ class PHPWebDriverTest extends PHPUnit_Framework_TestCase {
         $this->init();
     }
 	
-	public function testBasic(){
+	public function loginCDT(){
 		$this->loginAdmin();
 		$this->loginCustomer();
         $this->submitAddressPopup();
-        //$this->searchItem();
-        //$this->addItemToCart();
 	}
 	
 	public function loginAdmin(){
@@ -71,22 +93,4 @@ class PHPWebDriverTest extends PHPUnit_Framework_TestCase {
         $this->webdriver->findElementBy(LocatorStrategy::cssSelector, 'div.buttons-set:nth-child(5) > button:nth-child(2)')->click();
 	}
 
-	public function searchItem(){
-        sleep(5);
-        $this->webdriver->findElementBy(LocatorStrategy::id, 'search')->sendKeys(array("ASPIRINA"));
-        $this->webdriver->findElementBy(LocatorStrategy::cssSelector, '#search_mini_form > div > button')->click();
-    }
-
-    public function addItemToCart(){
-        sleep(5);
-        $this->webdriver->findElementBy(LocatorStrategy::cssSelector, '#products-list > li:nth-child(1) > div.list-center > div > div > div > p > button')->click();
-    }
-
-    public function checkout(){
-
-    }
-
 }
-
-$test = new PHPWebDriverTest();
-$test->setUp();
